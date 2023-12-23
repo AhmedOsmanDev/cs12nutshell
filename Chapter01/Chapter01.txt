@@ -1,0 +1,28 @@
+
+NOTE: Method is a kind of function member.
+
+Type Safety: means that instance of types can interact only through protocols they define, thereby ensuring each type's internal consistency.
+
+Static Typing: means that the language enforces type safety at compile time.
+
+NOTE: C# allows parts of your code to be dynamically typed via the dynamic keyword. However, C# remains a predominantly statically typed language.
+
+Strongly Typed Language: means its type rules are strictly enforced whether statically or at runtime.
+
+NOTE: For performance-critical hotspots and interoperability, pointers and explicit memory allocation is permitted in blocks that are marked unsafe.
+
+Runtime support for C# programs consists of a Common Language Runtime and a Base Class Library. A runtime can also include a higher-level application layer that contains libraries for developing rich-client, mobile, or web applications.
+
+SEE: Figure 1-1. Runtime Architecture
+
+Managed Language: means it compiles source code into managed code, which is represented in Intermediate Language (IL). The container for managed code is called an assembly. An assembly contains not only IL but also type information (metadata). The presence of metadata allows assemblies to reference types in other assemblies without needing additional files.
+
+NOTE: A program can query its own metadata (reflection) and even generate new IL at runtime (reflection.emit).
+
+Common Language Runtime (CLR): provides essential runtime services such as automatic memory management and exception handling. The word "Common" refers to the fact that the same runtime can be shared by other managed programming languages. The CLR converts the IL into the native code for the machine, such as X64 or X86, usually just prior to execution. This is referred to as Just-In-Time (JIT) compilation. A head-of-time compilation is also available to improve startup time with large assemblies or resource-constrained devices.
+
+CLR always ships with a set of assemblies called a Base Class Library (BCL). A BCL provides core functionality to programmers. A BCL also implements types that the C# language itself requires and lets you explicitly access features of the CLR, such as Reflection and memory management.
+
+Runtime (also called a framework) is a deployable unit that you download and install. A runtime consists of a CLR (with its BCL), plus an optional application layer specific to the kind of application that you're writing. If you're writing a command-line console application or a non-UI library, you don't need an application layer. When writing an application, you target a particular runtime, which means that your application uses and depends on the functionality that the runtime provides. Your choice of runtime also determines which platforms your application will support.
+
+SEE: Figure 1-2. Runtimes for C#
