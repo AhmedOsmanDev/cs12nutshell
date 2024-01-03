@@ -1,0 +1,64 @@
+
+NOTE: A basic form of code reuse is to write higher-level function that call lower-level functions.
+
+Compilation: The C# compiler compiles source code (a set of files with the .cs extension) into an assembly.
+
+Assembly: is the unit of packaging and deployment in .NET. An assembly can be either an application or a library.
+
+NOTE: A normal console or Windows application has an entry point, whereas a library does not. The purpose of a library is to be called upon (referenced) by an application or by other libraries. .NET itself is a set of libraries (as well as a runtime environment).
+
+NOTE: The presence of top-level statements implicitly creates an entry point for a console or Windows application.
+
+NOTE: Unlike .NET Framework, .NET 8  assemblies never have a .exe extension. The .exe that you see after building a .NET 8 application is a platform-specific native loader responsible for starting your application's .dll assembly.
+
+NOTE: .NET 8 also allows you to create a self-contained deployment that includes the loader, your assemblies, and the required portions of the .NET runtime --- all in a single .exe file. .NET 8 also allows ahead-of-time (AOT) compilation, where the executable contains precompiled native code for faster startup and reduced memory consumption.
+
+Identifiers: are names that programmers chose for their classes, methods, variables, and so on. By convention, parameters, local variables, and private fields should be in camel case and all other identifiers should be in Pascal case.
+
+Keywords: are names that mean something special to the compiler. Most keywords are reserved, which means that you can't use them as identifier. If you really want to use an identifier that clashes with a reserved keyword, you can do so by qualifying it with the @ prefix. The @ symbol doesn't form part of the identifier itself.
+
+Contextual Keywords: means that you also can use them as identifier without an @ symbol. With contextual keywords, ambiguity cannot arise within the context inn which they are used.
+
+Literals: are primitive pieces of data lexically embedded into the program.
+Punctuators: help demarcate the structure of the program.
+Operator: transforms and combines expressions.
+
+Comments: C# offers two different styles of source-code documentation: single-line comments and multiline comments.
+
+Type: defines the blueprint for a value.
+
+Variable: denotes a storage location that can contain different values over time. In contrast, a constant always represent the same value.
+
+NOTE: All values in C# are instances of a type. The meaning of a value and the set of possible values a variables can have are determined by its type.
+
+Predefined Types (Built-In Types): are types that are specially supported by the compiler.
+
+NOTE: A type contains data members and function members.
+
+Symmetry of predefined types and custom types: A beautiful aspect of C# is that predefined types and custom types have few differences.
+
+Constructors and Instantiation: Data is created by instantiating a type. Predefined types can be instantiated simple by using a literal. The new operator creates instances of a custom type. Immediately after the new operator instantiates an object, the object's constructor is called to perform initialization. A constructor is defined like a method, except that the method name and return type are reduced to the name of the enclosing type.
+
+Instance members: The data members and function members that operate on the instance of the type are called instance members.
+
+Static members: The data members and function members that don't operate on the instance fo the type. To refer to a static member from outside its type, you specify its type name rather than an instance.
+
+Static class: means that all of its members are static and you can never create instances of it.
+
+public: The public keyword exposes members to other classes. In object-oriented terms, we say that the public members encapsulate the private members of the class.
+
+Main method:
+    - In the absence of top-level statements, C# looks for a static method called Main, which becomes the entry point. The Main method can defined inside any class (and only one Main method can exist).
+    - The Main method can optionally return an integer (rather than void) in order to return a value to the execution environment (where a nonzero value typically indicates an error). The Main method can also optionally accept an array of strings as a parameter (that will be populated with any arguments passed to the executable).
+    - The Main method can also be declared async and return a Task or Task<int> in support of asynchronous programming.
+
+Top-Level Statements: A file comprises three parts, in this order:
+    1. (Optionally) using directives.
+    2. A series of statements, optionally mixed with method declarations.
+    3. (Optionally) Type and namespace declarations.
+
+NOTE: The CLR doesn't explicitly support top-level statements.
+NOTE: That every thing is wrapped inside the main method. The most important being that local methods (unless declared as static) can access variables declared within the containing method.
+NOTE: Another consequence is that top-level methods cannot be accessed from other classes or types.
+NOTE: Top-Level statements can optionally return an integer value to teh caller and access a "magic" variable of type string[] called args, corresponding to command-lin arguments passed by the caller.
+NOTE: As a program can have only one entry point, there can be at most one file with top-level statements in a C# project.
