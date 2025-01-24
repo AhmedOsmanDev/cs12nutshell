@@ -62,3 +62,140 @@ NOTE: That every thing is wrapped inside the main method. The most important bei
 NOTE: Another consequence is that top-level methods cannot be accessed from other classes or types.
 NOTE: Top-Level statements can optionally return an integer value to teh caller and access a "magic" variable of type string[] called args, corresponding to command-lin arguments passed by the caller.
 NOTE: As a program can have only one entry point, there can be at most one file with top-level statements in a C# project.
+
+Conversion: C# can convert between instances of compatible types. A conversion always creates a new value from an existing one. Conversion can be either implicit or explicit.
+    - Implicit conversion: happen automatically. Implicit conversion are allowed when both of the following are true:
+        + The compiler can guarantee that they will always succeed.
+        + No information is lost in conversion.
+    - Explicit conversion: require a cast. Explicit conversion are required when one of the following is true.
+        + The compiler cannot guarantee that they will always succeed.
+        + Information might be lost during conversion.
+
+NOTE: If the compiler can determine that a conversion will always fail, both kinds of conversion are prohibited. Conversion that involve generics can also fail in certain conditions.
+
+NOTE: All C# types fall into the following categories:
+    - Value type
+    - Reference type
+    - Generic type parameters
+    - pointer types
+
+Value Types: comprise most built-in types as well as custom struct and enum types.
+    - The content of a value type variable or constant is simply a value.
+    - SEE: Figure 2-1. A value-type instance in memory
+    - The assignment of a value-type instance always copies the instance.
+    - Instances occupy precisely the memory required to store their fields.
+Reference Types: comprise all class, array, delegate, and interface types. This include the predefined string type.
+    - A reference type have two parts: an object and the reference to the object.
+    - The content of a reference-type variable or constant is a reference to an object that contains the value.
+    - SEE: Figure 2-3. A reference-type instance in memory
+    - Assigning a reference-type variable copies the reference, not the object instance.
+    - This allows multiple variables to refer to the same object.
+    - SEE: Figure 2-4. Assignment copies a reference
+    - Require separate allocations of memory for the reference and object.
+        + The object consumes as many bytes as its fields, plus additional administrative overhead.
+        + The precise overhead is intrinsically private to the implementation of the .NET runtime, but minimum, the overhead is 8 bytes, used to store a key to the object's type as well as temporary information such as its lock state for multithreading ad flag to indicate whether it has been fixed from movement by the garbage collector.
+        + Each reference to an object requires an extra 4 or 8 bytes, depending on whether the .NET runtime is running on a 32- or 64-bit platform.
+Null: A reference can be assigned the literal null, indicating that the reference points to no object.
+
+NOTE: The fundamental difference between value types and reference types is how they are handled in memory.
+NOTE: In Nullable Reference Types, we describe a feature of C# that helps to reduce accidental NullReferenceException errors.
+NOTE: C# also has a construct called nullable value types for representing value-type nulls.
+NOTE: Predefined types in C# alias .NET types in the System namespace.
+    - The set of predefined value types excluding decimal are known as primitive types in the CLR. Primitive types are so called because they are supported directly via instructions in compiled code, and this usually translates to direct support on the underlying processor.
+
+Numeric Types
+    * .NET supplements this list with several specialized numeric types, including Int128 and UInt128 for signed and unsigned 128-bit integers, BigInteger for arbitrarily large integers, and Half for 16-bit floating point numbers. Half is intended mainly for interoperating with graphics card processors and does not have native support in most CPUs, making float and double better choices for general use.
+    * Numeric Literals: Integral-type literals can use decimal or hexadecimal notion.
+        + You can specify binary with the 0b prefix.
+        + You can specify hexadecimal with the 0x prefix.
+        + You can insert an underscore anywhere within a numeric literal to make it more readable.
+        + Real literals can use decimal and/or exponential notation.
+        + Literal's type is the first type in this list that can fit the literal's value.
+        + Numeric suffixes explicitly define the type of a literal. Suffixes can be either lowercase or uppercase.
+        + The suffixes U and L are rarely necessary because the uint, long, and ulong types can nearly always be either inferred or implicitly converted from int.
+        + The D suffix is technically redundant in that all literals with a decimal point are inferred to be double.
+        + The F and M suffixes are the most useful and should always be applied when specifying float or decimal literals. Without the F suffix, the following line would not compile, because 4.5 would be inferred to be of type double, which has no implicit conversion to float.
+    * Numeric Conversions
+        + Integral type conversions are implicit when the destination type can represent every possible value of the source type. Otherwise, an explicit conversion is required.
+        + All integral types can be implicitly converted to all floating-point types. The reverse conversion must be explicit.
+        + NOTE: When you cast form a floating-point number to an integral type, any fractional portion is truncated; no rounding is performed. The static class System.Convert provides methods that round while converting between various numeric types.
+        + Implicitly converting a large integral type to a floating-point type preserves magnitude but can occasionally lose precision. This is because floating-point types always have more magnitude than integral types but can have less precision.
+        + Decimal conversions: All integral types can be implicitly converted to the decimal type given that a decimal can represent every possible C# integral-type value. All other numeric conversions to and from a decimal type must be explicit because they introduce the possibility of either a value being out of range or precision being lost.
+
+Specialized Operations on Integral Types
+    * Overflow check operators: The checked operator instructs the runtime to generate an OverflowException rather than overflowing silently when an integral-type expression or statement exceeds the arithmetic limits of that type.
+    * The checked operator has n effect on the double and float types (which overflow to special "infinite" values, as you'll see soon) and no effect on the decimal type (which is always checked).
+    * You can use checked around either an expression or statement block.
+    * If you then need to disable overflow checking just for specific expressions or statements, you can do so with the unchecked operator.
+
+8- and 16-Bit Integral Types
+    * The 8- and 16-bit integral types are byte, sbyte, short, and ushort. These types lack their own arithmetic operator, so C# implicitly converts them to larger types as required. This can cause a compile-time error when trying to assign the result back to a small integral type. In this case, x and y are implicitly converted to int so that the addition can be performed. This means that the result is also an int, which cannot be implicitly cast back to a short (because it could cause loss of data). To make this compile, you must add an explicit cast.
+
+Special Float and Double Values
+    * Unlike integral types, floating-point types have values that certain operations treat specially. These special values are NaN (Not a Number), +8, -8, and -0. The float and double classes have constants for NaN, +8, and -8, as well as other values (MaxValue, MinValue, and Epsilon).
+    * To test whether a value is NaN, you must use the float.IsNaN or double.IsNaN method, or using object.Equals, however, two NaN values are equal.
+
+double Versus decimal: double is useful for scientific computations. decimal is useful for financial computations and values that are manufactured rather than the result of real-world measurements.
+
+Real Number Rounding Errors
+    * float and double internally represent numbers in base 2. For this reason, only numbers expressible in base 2 are represented precisely. Practically, this means most literals with a fractional component (which are in base 10) will not be represented precisely.
+    * This is why float and double are bad for financial calculations. In contrast, decimal works in base 10 and so can precisely represent numbers expressible in base 10 (as well as its factors, base 2 and base 5). Because real literals are in base 10, decimal can precisely represent numbers such as 0.1.
+
+Boolean Type and Operators
+    * To avoid space inefficiency in the case of array, .NET provides a BitArray class in the System.Collections namespace that is designed to use just one bit per boolean value.
+    * No casing conversions can be made from the bool type to numeric types, or vice versa.
+    * NOTE: Unlike in C and C++, the & and | operators perform (non-short-circuiting) Boolean comparisons when applied to bool expressions. The & and | operators perform bitwise operations only when applied to numbers.
+
+Strings and Characters
+    * The \u (or \x) escape sequence lets you specify any Unicode character via its four-digit hexadecimal code.
+    * Char Conversions: An implicit conversion from a char to a numeric type works for the numeric types that can accommodate an unsigned short. For other numeric types, an explicit conversion is required.
+    * String Type: Represent an immutable (unmodified) sequence of Unicode characters.
+    * string is a reference type rather than a value type. Its equality operators, however, follow value-type semantics.
+    * A verbatim string literal is prefixed with @ and does not support escape sequences. A verbatim string literal can also span multiple lines. You can include the double-quote character in a verbatim literal by writing it twice.
+    * Row string literals: can contain almost any character sequence, without escaping or doubling up. Row string literals make it ease to represent JSON, XML, and HTML literals, as well as regular expressions and source code. Should you need to include three (or more) quote characters in the string itself, you can do so by wrapping the string in four (or more) quote characters.
+    * string interpolation: A string preceded with the $ character is called an interpolated string. Interpolated strings can include expressions enclosed in braces.
+    * Any valid C# expression of any type can appear within the braces, and C# will convert the expression to a string by calling its ToString method or equivalent. You can change the formatting by appending the expression with a colon and a format string. Should you need to use a colon for anther purpose (such as ternary conditional operator, which we'll cover later), you must wrap the entire expression in parentheses.
+    * Using two (or more) $ character in a raw string literal prefix changes the interpolation sequence from one brace to two (or more) braces.
+    * UTF-8 Strings: You can use the u8 suffix to create string literals encoded in UTF-8 rather than UTF-16.
+
+Arrays: An array represents a fixed number of variables (called elements) of a particular type. The elements in an array are always stored in a contiguous block of memory, providing highly efficient access.
+    - After an array has been created, you cannot change its length.
+    - Creating an array always preinitializes the elements with default values.
+    - An array itself is always a reference type object, regardless of element type.
+    - Indices let you refer to element relative to the end of an array, with the ^ operator. ^0 equals the length of the array. C# implement indices with the help of the Index type.
+    - Ranges let you slice an array by using the .. operator. The second number in the range is exclusive. You can also use the ^ symbol in ranges. C# implement ranges with the help of the Range type.
+    - Multidimensional Arrays: come in two varieties: rectangular and jagged. Rectangular arrays represent an n-dimensional block of memory, and jagged arrays are arrays of arrays.
+        + Rectangular arrays are declared using commas to separate each dimension.
+        + Jagged arrays are declared using successive square brackets to represent each dimension.
+
+Variables and Parameters
+    - Default value for the predefined types is the result of a bitwise zeroing of memory.
+    - Parameters: A method may have a sequence of parameters. Parameters define the set of arguments that must be provided for that method.
+    - You can control how parameters are passed with the ref, in, and out modifiers.
+        + (none)    value                   going in
+            = Passing a reference-type argument by value copies the reference but not the object.
+        + ref       reference               going in
+            = To pass by reference, C# provides the ref parameter modifier.
+            = Notice how the ref modifier is required both when writing and when calling the method.
+            = A parameter can be passed by reference or by value, regardless of whether the parameter type is a reference type of value type.
+        + in        reference (readonly)    going in
+            = An in parameter is similar to a ref parameter except that the argument's value cannot be modified by the method (doing so generates a compile-time error). This modifier is most useful when passing a large value type to the method because it allows the compiler to avoid the overhead of copying teh argument prior to passing it in while still protecting the original value from modification.
+            = Use of the in modifier is optional for the caller.
+        + out       reference               going out
+            = An out argument is like a ref argument except for the following:
+                * It need not be assigned before going into the function.
+                * It must be assigned before it comes out of the function.
+            = The out modifier is most commonly used to get multiple return values back from a method.
+            = Like a ref parameter, an out parameter is passed by reference.
+            = You can declare variables on the fly when calling methods with 'out' parameters. When calling methods with multiple out parameters, sometimes you're not interested in receiving values from all the parameters. In such cases, you can discard the ones in which you're uninterested by using an underscore. In this case, the compiler treats the underscore as a special symbol, called a discard. You can include multiple discard in a single call. For backward compatibility, this language feature will not take effect if a real underscore variable is in scope. When you pass an argument by reference, you alias the storage location of an existing variable rather than create a new storage location.
+        + params
+            = The params modifier, if applied to the last parameter of a method, allows the method to accept any number of arguments of a particular type.
+        + optional parameter
+            = A parameter is optional if it specifies a default value in its declaration.
+            = Optional parameter cannot be marked with ref or out.
+            = Mandatory parameters must occur before optional parameters in both the method declaration and the method call (the exception is with params arguments, which still always come last).
+        + named arguments
+            = Rather than identifying an argument by position, you can identify an argument by name.
+            = Named arguments can occur in any order.
+            = You can mix named and positional arguments. However, there is a restriction: positional arguments must come before named arguments unless they are used in the correct position.
+            = Named arguments are particularly useful in conjunction with optional parameters.
